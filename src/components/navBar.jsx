@@ -1,5 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
+import { Link } from "react-router-dom";
+
 const navBar = () => {
     const [isOpen,setIsOpen] = useState(false)
 
@@ -44,12 +46,12 @@ const navBar = () => {
           </div>
           {/* Link Button */}
           <div className="pr-2">
-            <a
-              href=""
+            <Link
+              to="/book"
               className="transition-colors duration-500 ease-in-out p-3 px-6 pt-2 pb-2 text-white font-poppins bg-ourBlue rounded-[17px] baseline hover:bg-gray-300 hover:text-ourBlue md:block"
             >
               Book Now
-            </a>
+            </Link>
           </div>
         </div>
         {/* Menu */}

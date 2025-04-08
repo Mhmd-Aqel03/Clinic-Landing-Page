@@ -1,22 +1,30 @@
-import { useState } from "react";
-import NavBar from "./components/navBar";
-import Hero from "./components/hero.jsx";
-import About from "./components/about.jsx";
-import Visit from "./components/visit.jsx";
-import Services from "./components/services.jsx"
-import Footer from "./components/footer.jsx"
-function App() {
+import React from "react";
+import HomePage from "./pages/homePage";
+import BookPage from "./pages/bookPage";
+import MainLayout from "./layout"
+import {
+  Route,
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+} from "react-router-dom";
 
-  return (
-    <>
-      <NavBar />
-      <Hero />
-      <About />
-      <Visit />
-      <Services />
-      <Footer />
-    </>
+const App = () => {
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route
+        path="/"
+        element={
+          <MainLayout/>
+        }
+      >
+        <Route index element={<HomePage />} />
+        <Route path="book" element={<BookPage />} />
+      </Route>
+    )
   );
-}
+
+  return <RouterProvider router={router} />;
+};
 
 export default App;

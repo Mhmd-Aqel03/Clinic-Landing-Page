@@ -13,10 +13,10 @@ const transporter = nodemailer.createTransport({
 
 const sendMails = (patientMail, doctorMail, date, time, name, pn) => {
   // Sanatise inputs
-  const safeDate = escape(date)
-  const safeTime = escape(time)
-  const safeName = escape(name)
-  const safePn = escape(pn)
+  const safeDate = escape(date);
+  const safeTime = escape(time);
+  const safeName = escape(name);
+  const safePn = escape(pn);
 
   const patientMailOptions = {
     from: process.env.SMTP_MAIL,
@@ -38,25 +38,25 @@ const sendMails = (patientMail, doctorMail, date, time, name, pn) => {
     `,
     text: `The appointment is on ${safeDate} at ${safeTime}`,
   };
-  try{
-  // Send email to paitent
-  transporter.sendMail(patientMailOptions, (error, info) => {
-    if (error) {
-      return console.log("Error sending email: ", error);
-    }
-    console.log("Email sent to pateint: ", info.response);
-  });
+  try {
+    // Send email to paitent
+    transporter.sendMail(patientMailOptions, (error, info) => {
+      if (error) {
+        return console.log("Error sending email: ", error);
+      }
+      console.log("Email sent to pateint: ", info.response);
+    });
 
-  // Send email to doctor
-  transporter.sendMail(doctorMailOptions, (error, info) => {
-    if (error) {
-      return console.log("Error sending email: ", error);
-    }
-    console.log("Email sent to dcotor: ", info.response);
-  });
-    } catch(error){
-        console.error("Error sending emails:", error);
-    }
+    // Send email to doctor
+    transporter.sendMail(doctorMailOptions, (error, info) => {
+      if (error) {
+        return console.log("Error sending email: ", error);
+      }
+      console.log("Email sent to dcotor: ", info.response);
+    });
+  } catch (error) {
+    console.error("Error sending emails:", error);
+  }
 };
 
 module.exports = sendMails;
