@@ -1,10 +1,13 @@
 import React from "react";
 
-const TimeSlot = ({ text }) => {
+const TimeSlot = ({ text, func, selected }) => {
   return (
-    <span className="bg-gray-200 border-2 border-solid border-gray-300 mx-2 my-2 rounded-[12px]">
+    <button
+      className={`border-2 border-solid border-gray-300 mx-2 my-2 rounded-[12px] ${selected? "bg-gray-300":"bg-gray-200"}`}
+      onClick={() => func(text)}
+    >
       <p className="font-poppins px-3 py-1 font-medium">{text}</p>
-    </span>
+    </button>
   );
 };
 

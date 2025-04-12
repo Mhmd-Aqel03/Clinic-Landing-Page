@@ -6,7 +6,7 @@ require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const uri = process.env.DB_CON;
 const sendMails = require("./mail");
-const {isEmail} = require("validator")
+const { isEmail } = require("validator");
 // Models
 const Reservation = require("./models/reservation");
 
@@ -33,14 +33,15 @@ app.use(cors(corsOptions));
 const PORT = process.env.PORT || 8000;
 
 app.post("/book", async (req, res) => {
+  console.log(req.body);
   const { date, time, firstName, lastName, phoneNumber, email } = req.body;
 
   // Check if all feilds are entered.
   if (!date || !time || !firstName || !lastName || !phoneNumber || !email) {
     return res.status(400).json({ msg: "not all feilds entered" });
   }
-  
-  // Check if time between 9 am and 8 pm. 
+
+  // Check if time between 9 am and 8 pm.
   if (time < 9 || time > 20) {
     return res.status(400).json({ msg: "time only allowed between 9 and 20" });
   }
@@ -56,8 +57,8 @@ app.post("/book", async (req, res) => {
   }
 
   // Check if email is valid
-  if(!isEmail(email)){
-    return res.status(200).json({msg:"email is not valid"})
+  if (!isEmail(email)) {
+    return res.status(200).json({ msg: "email is not valid" });
   }
 
   const newReservation = new Reservation({
@@ -72,23 +73,29 @@ app.post("/book", async (req, res) => {
     await newReservation.save();
 
     try {
-      var amTime
-      if(time <= 12){
-        amTime = time +'' +" am"
-      }else{
-      
-        amTime = (time-12) +''+ " pm"
+      var amTime;
+      if (time <= 12) {
+        amTime = time + "" + " am";
+      } else {
+        amTime = time - 12 + "" + " pm";
       }
-      sendMails(email, email, date, amTime, firstName + ' ' + lastName, phoneNumber);
+      sendMails(
+        email,
+        email,
+        date,
+        amTime,
+        firstName + " " + lastName,
+        phoneNumber
+      );
 
-      return res.status(201).json({ msg: "Appintment saved and emails sent sucessfully" });
-    } catch(error) {
-      console.log(error)
       return res
-        .status(500)
-        .json({
-          msg: "appointment was saved, but something went wrong with sending emails",
-        });
+        .status(200)
+        .json({ msg: "Appintment saved and emails sent sucessfully" });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+        msg: "appointment was saved, but something went wrong with sending emails",
+      });
     }
   } catch (err) {
     return res
@@ -97,18 +104,34 @@ app.post("/book", async (req, res) => {
   }
 });
 
-app.get("/getBookings", async (req, res) => {
-  const date = req.body.date;
+app.get("/getBookings/:date", async (req, res) => {
+  const date = req.params.date;
 
   if (!date) {
-    res.status(400).json({ msg: "no date provided" });
+    return res.status(400).json({ msg: "no date provided" });
   }
 
   const reservations = await Reservation.find({ date: date });
 
   bookingTimes = reservations.map((b) => b.time);
 
-  return res.status(200).json({ times: bookingTimes });
+  const allTimes = [
+    "9:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+  ];
+
+  // Filter out booked times
+  const availableTimes = allTimes.filter(
+    (time) => !bookingTimes.includes(time)
+  );
+
+  return res.status(200).json({ times: availableTimes });
 });
 
 app.get("/reset", async (req, res) => {
