@@ -1,5 +1,5 @@
 import React from "react";
-// suck me nutsss slmaoaoaoaoao
+
 const singleService = ({ photo, name, arrow = false, hide = false }) => {
   return (
     <a
